@@ -10,19 +10,25 @@
     width="260"
     v-bind="$attrs"
   >
-    <v-list-item>
-      <v-list-item-avatar>
-        <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
-      </v-list-item-avatar>
+    <template v-slot:img="props">
+      <v-img :gradient="`to bottom, ${barColor}`" v-bind="props" />
+      <v-divider class="mb-1" />
+    </template>
 
-      <v-list-item-content>
-        <v-list-item-title>John Leider</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+    <v-list dense nav>
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-img :src="require('@/assets/img-patigo.png')"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ appName }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
 
-    <v-divider></v-divider>
+    <v-divider class="mb-2" />
 
-    <v-list shaped>
+    <v-list expand nav>
       <patigo-menu v-for="(route , index) in routes" :key="index" :route="route" />
     </v-list>
   </v-navigation-drawer>
@@ -44,7 +50,9 @@ export default {
     }
   },
 
-  data: () => ({}),
+  data: () => ({
+    appName: process.env.VUE_APP_TITLE
+  }),
 
   computed: {
     ...mapState(["barColor", "barImage"]),
@@ -58,6 +66,9 @@ export default {
     },
     routes() {
       return this.$router.options.routes;
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
     }
   }
 };

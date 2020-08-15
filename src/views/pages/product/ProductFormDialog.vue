@@ -10,19 +10,34 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md="6">
+                    <ValidationProvider v-slot="{ errors }" name="Categoria" rules="required">
+                      <v-select
+                        v-model="product.category"
+                        :items="categories"
+                        label="Selecione uma Categoria"
+                        item-text="name"
+                        item-value="code"
+                        id="category-select"
+                        return-object
+                        :error-messages="errors"
+                      ></v-select>
+                    </ValidationProvider>
+                  </v-col>
+
+                  <v-col cols="12" md="6">
                     <ValidationProvider
                       v-slot="{ errors }"
                       name="Nome"
-                      rules="required|max:40|min:3"
+                      rules="required|max:30|min:3"
                     >
                       <v-text-field
-                        v-model="category.name"
+                        v-model="product.name"
                         id="name-input"
-                        :counter="40"
+                        :counter="30"
                         :error-messages="errors"
                         aria-autocomplete="false"
-                        label="Nome Categoria"
+                        label="Nome Produto"
                         hint="Exemplo: Bebida, Pão, Carne."
                       ></v-text-field>
                     </ValidationProvider>
@@ -35,7 +50,8 @@
                       rules="required|max:80|min:5"
                     >
                       <v-textarea
-                        v-model="category.description"
+                        v-model="product.description"
+                        id="description-textarea"
                         auto-grow
                         clearable
                         :counter="80"
@@ -46,10 +62,11 @@
                       ></v-textarea>
                     </ValidationProvider>
                   </v-col>
-                  <v-col cols="12">
+
+                  <v-col cols="12" md="6">
                     <ValidationProvider v-slot="{ errors }" rules="required" name="Status">
                       <v-radio-group
-                        v-model="category.status"
+                        v-model="product.status"
                         id="status-radio"
                         :error-messages="errors"
                         label="Status: "
@@ -76,21 +93,32 @@
 </template>
 
 <script>
+import CategoryService from "@/service/CategoryService";
+
 export default {
-  name: "CategoryFormDialog",
+  name: "ProductFormDialog",
 
   inject: ["save"],
 
+  data: () => ({
+    categories: [],
+    teste: null,
+  }),
+
   props: {
-    category: {
+    product: {
       required: true,
-      type: Object
+      type: Object,
     },
     value: Boolean,
     dialogTitle: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
+  },
+
+  created() {
+    this.categoryService = new CategoryService();
   },
 
   computed: {
@@ -101,13 +129,19 @@ export default {
       set(value) {
         this.cleanValidate();
         this.$emit("input", value);
-      }
-    }
+      },
+    },
+  },
+
+  mounted() {
+    this.getCategories().then((data) => {
+      this.categories = data.categories;
+    });
   },
 
   methods: {
     saveItem() {
-      this.$refs.observer.validate().then(success => {
+      this.$refs.observer.validate().then((success) => {
         if (!success) {
           return;
         }
@@ -117,7 +151,25 @@ export default {
 
     cleanValidate() {
       this.$refs.observer.reset();
-    }
-  }
+    },
+
+    getCategories() {
+      // eslint-disable-next-line no-unused-vars
+      return new Promise((resolve, reject) => {
+        let categories = this.categoryService.getAll("A").then((res) => {
+          if (!res._embedded) {
+            return [];
+          }
+          categories = res._embedded.categories;
+
+          setTimeout(() => {
+            resolve({
+              categories,
+            });
+          }, 1000);
+        });
+      });
+    },
+  },
 };
 </script>

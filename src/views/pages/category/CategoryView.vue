@@ -9,7 +9,7 @@ export default {
   name: "CategoryView",
 
   components: {
-    PatigoCategory: () => import("@/components/category/Category")
+    PatigoCategory: () => import("@/components/Category")
   }
 };
 </script>

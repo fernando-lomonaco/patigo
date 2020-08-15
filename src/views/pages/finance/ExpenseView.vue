@@ -1,15 +1,15 @@
 <template>
   <div>
-    <patigo-product />
+    <patigo-expense />
   </div>
 </template>
 
 <script>
 export default {
-  name: "ProductView",
+  name: "ExpenseView",
 
   components: {
-    PatigoProduct: () => import("@/components/Product")
+    PatigoExpense: () => import("@/components/Expense")
   }
 };
 </script>

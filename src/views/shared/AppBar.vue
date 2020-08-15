@@ -1,90 +1,123 @@
 <template>
-  <v-app-bar id="app-bar" absolute app color="transparent" flat height="75">
-   
-     <v-btn
-      class="mr-3"
-      elevation="1"
-      fab
-      small
-      @click="setDrawer(!drawer)"
-    >
-      <v-icon v-if="false">
-        mdi-view-quilt
-      </v-icon>
-
-      <v-icon v-else>
-        mdi-dots-vertical
-      </v-icon>
+  <v-app-bar id="app-bar" absolute app color="transparent" flat height="48">
+    <v-btn class="mr-3" icon fab small @click="setDrawer(!drawer)">
+      <v-icon small color="info" v-if="drawer">chevron_left</v-icon>
+      <v-icon small color="info" v-else>chevron_right</v-icon>
     </v-btn>
-    <!-- <v-app-bar-nav-icon @click="drawer =! drawer"></v-app-bar-nav-icon> -->
 
-    <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
+    <v-toolbar-title class="hidden-sm-and-down font-weight-light" v-text="$route.name" />
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
-      <v-icon>mdi-heart</v-icon>
-    </v-btn>
-
-    <v-btn
-      class="ml-2"
-      min-width="0"
-      text
-      to="/user"
-    >
-      <v-icon>mdi-account</v-icon>
-    </v-btn>
-
-    <v-menu left bottom>
+    <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
+        <v-icon color="red" dark v-bind="attrs" v-on="on">mdi-heart</v-icon>
       </template>
+      <span>{{ currentUser.username }}</span>
+    </v-tooltip>
 
-      <v-list dense>
-        <v-subheader>AÇÕES</v-subheader>
-        <v-divider />
-        <v-list-item-group v-model="item" color="primary">
-          <v-list-item v-for="(item, i) in items" :key="i">
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
+    <v-menu transition="fab-transition" bottom left offset-y origin="top" min-width="200px">
+      <template v-slot:activator="{ on, attrs }">
+        <v-list dense nav>
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-img
+                src="https://randomuser.me/api/portraits/men/78.jpg"
+                min-width="0"
+                v-bind="attrs"
+                v-on="on"
+                style="cursor:pointer"
+              ></v-img>
+            </v-list-item-avatar>
           </v-list-item>
-        </v-list-item-group>
+        </v-list>
+      </template>
+      <v-list dense nav>
+        <div>
+          <app-bar-item v-for="(n, i) in notifications" :key="`item-${i}`" :href="n.to">
+            <v-list-item-title v-text="n.name" />
+          </app-bar-item>
+          <v-divider />
+          <app-bar-item>
+            <v-list-item-title @click="logOut">Sair</v-list-item-title>
+          </app-bar-item>
+        </div>
       </v-list>
     </v-menu>
+
+    <!-- <v-list dense nav>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+          </v-list-item-avatar>
+        </v-list-item>
+    </v-list>-->
   </v-app-bar>
 </template>
 
 <script>
+import { VHover, VListItem } from "vuetify/lib";
 
-  import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "AppBar",
 
+  components: {
+    AppBarItem: {
+      render(h) {
+        return h(VHover, {
+          scopedSlots: {
+            default: ({ hover }) => {
+              return h(
+                VListItem,
+                {
+                  attrs: this.$attrs,
+                  class: {
+                    "black--text": !hover,
+                    "white--text secondary elevation-12": hover,
+                  },
+                  props: {
+                    activeClass: "",
+                    dark: hover,
+                    link: true,
+                    ...this.$attrs,
+                  },
+                },
+                this.$slots.default
+              );
+            },
+          },
+        });
+      },
+    },
+  },
+
   data: () => ({
-    appTitle: process.env.VUE_APP_TITLE,
-    item: 1,
-    items: [
-      { text: "Perfil", icon: "account_circle" },
-      { text: "Sair", icon: "exit_to_app" }
-    ]
+    titlePage: "",
+
+    notifications: [
+      { name: "Perfil", to: "/category" },
+      { name: "Xurumb", to: "/product" },
+    ],
   }),
 
-   computed: {
-      ...mapState(['drawer']),
+  computed: {
+    ...mapState(["drawer"]),
+    currentUser() {
+      return this.$store.state.auth.user;
     },
+  },
 
-    methods: {
-      ...mapMutations({
-        setDrawer: 'SET_DRAWER',
-      }),
+  methods: {
+    ...mapMutations({
+      setDrawer: "SET_DRAWER",
+    }),
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
     },
+  },
 };
 </script>
 

@@ -10,20 +10,19 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md="6">
                     <ValidationProvider
                       v-slot="{ errors }"
-                      name="Nome"
-                      rules="required|max:40|min:3"
+                      name="CNPJ"
+                      rules="required|max:18|regex:\d{2}.\d{3}.\d{3}\/\d{4}-\d{2}"
                     >
                       <v-text-field
-                        v-model="category.name"
-                        id="name-input"
-                        :counter="40"
+                        v-model="partner.document"
+                        id="document-input"
+                        v-mask="'##.###.###/####-##'"
                         :error-messages="errors"
-                        aria-autocomplete="false"
-                        label="Nome Categoria"
-                        hint="Exemplo: Bebida, Pão, Carne."
+                        label="CNPJ"
+                        @keyup="searchDocument"
                       ></v-text-field>
                     </ValidationProvider>
                   </v-col>
@@ -31,33 +30,17 @@
                   <v-col cols="12">
                     <ValidationProvider
                       v-slot="{ errors }"
-                      name="Descrição"
-                      rules="required|max:80|min:5"
+                      name="Nome"
+                      rules="required|max:60|min:3"
                     >
-                      <v-textarea
-                        v-model="category.description"
-                        auto-grow
-                        clearable
-                        :counter="80"
+                      <v-text-field
+                        v-model="partner.name"
+                        id="name-input"
+                        readonly
+                        :counter="60"
                         :error-messages="errors"
-                        row-height="24"
-                        rows="1"
-                        label="Descrição"
-                      ></v-textarea>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12">
-                    <ValidationProvider v-slot="{ errors }" rules="required" name="Status">
-                      <v-radio-group
-                        v-model="category.status"
-                        id="status-radio"
-                        :error-messages="errors"
-                        label="Status: "
-                        row
-                      >
-                        <v-radio label="Ativo" color="indigo" value="A"></v-radio>
-                        <v-radio label="Inativo" color="indigo" value="I"></v-radio>
-                      </v-radio-group>
+                        label="Nome Parceiro"
+                      ></v-text-field>
                     </ValidationProvider>
                   </v-col>
                 </v-row>
@@ -77,12 +60,12 @@
 
 <script>
 export default {
-  name: "CategoryFormDialog",
+  name: "PartnerFormDialog",
 
-  inject: ["save"],
+  inject: ["save", "search"],
 
   props: {
-    category: {
+    partner: {
       required: true,
       type: Object
     },
@@ -113,6 +96,10 @@ export default {
         }
         this.save();
       });
+    },
+
+    searchDocument() {
+      this.search();
     },
 
     cleanValidate() {

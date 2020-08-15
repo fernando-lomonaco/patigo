@@ -1,9 +1,17 @@
 <template>
-  <h2>ABC</h2>
+  <div>
+    <patigo-partner />
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  name: "PartnerView",
+
+  components: {
+    PatigoPartner: () => import("@/components/Partner")
+  }
+};
 </script>
 
 <style>
