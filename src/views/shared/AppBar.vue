@@ -1,6 +1,22 @@
 <template>
-  <v-app-bar color="deep-purple accent-1" dense dark app>
-    <v-app-bar-nav-icon @click="drawer =! drawer"></v-app-bar-nav-icon>
+  <v-app-bar id="app-bar" absolute app color="transparent" flat height="75">
+   
+     <v-btn
+      class="mr-3"
+      elevation="1"
+      fab
+      small
+      @click="setDrawer(!drawer)"
+    >
+      <v-icon v-if="false">
+        mdi-view-quilt
+      </v-icon>
+
+      <v-icon v-else>
+        mdi-dots-vertical
+      </v-icon>
+    </v-btn>
+    <!-- <v-app-bar-nav-icon @click="drawer =! drawer"></v-app-bar-nav-icon> -->
 
     <v-toolbar-title>{{ appTitle }}</v-toolbar-title>
 
@@ -10,8 +26,13 @@
       <v-icon>mdi-heart</v-icon>
     </v-btn>
 
-    <v-btn icon>
-      <v-icon>mdi-magnify</v-icon>
+    <v-btn
+      class="ml-2"
+      min-width="0"
+      text
+      to="/user"
+    >
+      <v-icon>mdi-account</v-icon>
     </v-btn>
 
     <v-menu left bottom>
@@ -40,18 +61,30 @@
 </template>
 
 <script>
+
+  import { mapState, mapMutations } from 'vuex'
+
 export default {
   name: "AppBar",
 
   data: () => ({
     appTitle: process.env.VUE_APP_TITLE,
-    drawer: null,
     item: 1,
     items: [
       { text: "Perfil", icon: "account_circle" },
       { text: "Sair", icon: "exit_to_app" }
     ]
-  })
+  }),
+
+   computed: {
+      ...mapState(['drawer']),
+    },
+
+    methods: {
+      ...mapMutations({
+        setDrawer: 'SET_DRAWER',
+      }),
+    },
 };
 </script>
 

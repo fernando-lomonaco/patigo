@@ -1,6 +1,15 @@
 <template>
-  <v-navigation-drawer v-model="drawer" bottom light app>
-    <!-- :src="bg" -->
+  <v-navigation-drawer
+    id="core-navigation-drawer"
+    v-model="drawer"
+    :dark="barColor !== 'rgba(228, 226, 226, 1), rgba(255, 255, 255, 0.7)'"
+    :expand-on-hover="expandOnHover"
+    :src="barImage"
+    mobile-breakpoint="960"
+    app
+    width="260"
+    v-bind="$attrs"
+  >
     <v-list-item>
       <v-list-item-avatar>
         <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
@@ -14,12 +23,13 @@
     <v-divider></v-divider>
 
     <v-list shaped>
-      <patigo-menu v-for="(route , index) in routes" :key="index" :route="route"/>
+      <patigo-menu v-for="(route , index) in routes" :key="index" :route="route" />
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Drawer",
 
@@ -27,20 +37,31 @@ export default {
     PatigoMenu: () => import("./Menu")
   },
 
-  data: () => ({
-    drawer: true
-  }),
+  props: {
+    expandOnHover: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  data: () => ({}),
 
   computed: {
+    ...mapState(["barColor", "barImage"]),
+    drawer: {
+      get() {
+        return this.$store.state.drawer;
+      },
+      set(val) {
+        this.$store.commit("SET_DRAWER", val);
+      }
+    },
     routes() {
       return this.$router.options.routes;
-    },
-    bg() {
-      return "https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg";
     }
   }
 };
 </script>
 
-<style>
+<style lang="sass">
 </style>
