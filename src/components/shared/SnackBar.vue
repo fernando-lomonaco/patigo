@@ -23,7 +23,7 @@ export default {
   },
 
   data: () => ({
-    timeout: 8000
+    timeout: 5000
   }),
 
   computed: {

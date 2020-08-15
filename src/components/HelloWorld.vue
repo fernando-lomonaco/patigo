@@ -1,7 +1,5 @@
 <template>
-  <v-app id="sandbox">
-
-  <v-container fluid="">
+  <v-container>
     <v-row class="text-center">
       <v-col cols="12">
         <v-img
@@ -14,7 +12,7 @@
 
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
-          {{msg}}
+          Welcome to Vuetify
         </h1>
 
         <p class="subheading font-weight-regular">
@@ -91,23 +89,11 @@
       </v-col>
     </v-row>
   </v-container>
-   <v-footer
-      app
-    >
-      <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
-  </v-app>
 </template>
 
 <script>
   export default {
     name: 'HelloWorld',
-
-    props: {
-      msg: {
-        type: String,
-      }
-    },
 
     data: () => ({
       ecosystem: [
@@ -153,7 +139,7 @@
         },
         {
           text: 'Select a layout',
-          href: 'https://vuetifyjs.com/layout/pre-defined',
+          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
         },
         {
           text: 'Frequently Asked Questions',
