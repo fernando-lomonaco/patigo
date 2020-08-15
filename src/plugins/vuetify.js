@@ -2,12 +2,13 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import VueI18n from 'vue-i18n'
+import VueMask from 'v-mask'
 
 import pt from 'vuetify/es5/locale/pt'
 
 Vue.use(Vuetify);
-Vue.use(VueI18n)
-
+Vue.use(VueI18n);
+Vue.use(VueMask);
 
 const theme = {
     primary: '#4CAF50',
