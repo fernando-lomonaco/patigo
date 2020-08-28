@@ -9,7 +9,6 @@ class AuthService {
     login(user) {
         return apiAxios.post(this._resource + "signin", user)
             .then(res => {
-                console.log(res.data);
                 if (res.data.token) {
                     localStorage.setItem('user', JSON.stringify(res.data));
                 }

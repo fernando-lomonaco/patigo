@@ -20,7 +20,6 @@ export const auth = {
           return Promise.resolve(user);
         },
         error => {
-          console.log("aqui");
           commit('loginFailure');
           return Promise.reject(error);
         }
@@ -45,9 +44,6 @@ export const auth = {
   },
   mutations: {
     loginSuccess(state, user) {
-      console.log("-----");
-      console.log(state);
-      console.log(user);
       state.status.loggedIn = true;
       state.user = user;
     },
